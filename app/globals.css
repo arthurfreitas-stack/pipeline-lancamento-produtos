@@ -1,57 +1,172 @@
 @import "tailwindcss";
 
+/* =========================================================================
+ * Allu Design System Tokens — lite-design-system v0.1
+ * Source: github.com/allugator/lite-design-system/tokens/globals.css
+ * ========================================================================= */
+
 :root {
-  --bg: #0a0a0b;
-  --bg-subtle: #111113;
-  --bg-hover: #1a1a1d;
-  --border: #222226;
-  --border-strong: #333338;
-  --text: #e5e5e7;
-  --text-muted: #8a8a9a;
-  --text-faint: #55555f;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
+  /* 1. Brand */
+  --brand-50: #e9f7ef;
+  --brand-100: #c7ebd4;
+  --brand-200: #9adbb5;
+  --brand-300: #67c894;
+  --brand-400: #3eb87a;
+  --brand-500: #27ae60;
+  --brand-600: #1f9252;
+  --brand-700: #1b7a43;
+  --brand-800: #155f34;
+  --brand-900: #0f4426;
+
+  --color-primary: var(--brand-500);
+  --color-primary-hover: var(--brand-600);
+  --color-primary-active: var(--brand-700);
+  --color-primary-foreground: #ffffff;
+  --color-primary-subtle: var(--brand-50);
+  --color-selection-bg: var(--brand-500);
+  --color-selection-fg: var(--color-primary-foreground);
+
+  --color-brand-surface: #2e2f39;
+  --color-brand-surface-fg: #f4f4ef;
+  --color-brand-surface-fg-muted: rgba(244, 244, 239, 0.72);
+
+  /* 2. Neutrals */
+  --neutral-0: #ffffff;
+  --neutral-50: #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-150: #ebeff4;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #0f172a;
+  --neutral-950: #020617;
+
+  /* 3. Semantic surfaces */
+  --color-bg: var(--neutral-100);
+  --color-bg-subtle: var(--neutral-50);
+  --color-bg-elevated: var(--neutral-0);
+  --color-fg: var(--neutral-900);
+  --color-fg-muted: var(--neutral-500);
+  --color-fg-subtle: var(--neutral-400);
+  --color-fg-on-emphasis: var(--neutral-0);
+  --color-border: var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+  --color-divider: var(--neutral-200);
+  --color-ring: var(--brand-500);
+  --color-overlay: rgba(15, 23, 42, 0.45);
+
+  /* 4. Status */
+  --color-success: #16a34a;
+  --color-success-hover: #15803d;
+  --color-success-subtle: #dcfce7;
+  --color-success-foreground: #ffffff;
+  --color-warning: #d97706;
+  --color-warning-hover: #b45309;
+  --color-warning-subtle: #fef3c7;
+  --color-warning-foreground: #ffffff;
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+  --color-danger-subtle: #fee2e2;
+  --color-danger-foreground: #ffffff;
+  --color-info: #2563eb;
+  --color-info-hover: #1d4ed8;
+  --color-info-subtle: #dbeafe;
+  --color-info-foreground: #ffffff;
+
+  /* Sidebar — dark warm slate (igual AlluOffice) */
+  --color-sidebar-bg: #263136;
+  --color-sidebar-accent: #344046;
+  --color-sidebar-muted: #819098;
+  --color-sidebar-border: rgba(255, 255, 255, 0.08);
+  --color-sidebar-fg: var(--neutral-0);
+  --color-sidebar-fg-muted: rgba(255, 255, 255, 0.65);
+
+  /* 5. Typography */
+  --font-family-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 0.9375rem;
+  --font-body-sm: 0.875rem;
+  --font-caption: 0.8125rem;
+  --line-height-body: 1.55;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+
+  /* 6. Radii & shadows */
+  --border-radius-sm: 0.375rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 0.75rem;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+
+  /* -----------------------------------------------------------------------
+   * Backward compat aliases — mapeiam os tokens antigos para o design allu
+   * (evita ter que mudar cada componente individualmente)
+   * --------------------------------------------------------------------- */
+  --bg: var(--color-bg);
+  --bg-subtle: var(--color-bg-subtle);
+  --bg-hover: var(--color-bg-elevated);
+  --border: var(--color-border);
+  --border-strong: var(--color-border-strong);
+  --text: var(--color-fg);
+  --text-muted: var(--color-fg-muted);
+  --text-faint: var(--color-fg-subtle);
+  --accent: var(--color-primary);
+  --accent-hover: var(--color-primary-hover);
 }
 
-* {
+/* Base */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-body);
+  line-height: var(--line-height-body);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 3px;
+  background: var(--color-border-strong);
+  border-radius: 9999px;
 }
+::-webkit-scrollbar-thumb:hover { background: var(--neutral-400); }
 
+/* Form elements — light mode */
 input, textarea, select {
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 6px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  color: var(--color-fg);
+  border-radius: var(--border-radius-sm);
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: var(--font-body-sm);
+  font-family: inherit;
   outline: none;
   width: 100%;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: var(--accent);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-subtle);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--color-fg-subtle);
 }
 
 textarea {
@@ -59,7 +174,24 @@ textarea {
   min-height: 80px;
 }
 
+select {
+  cursor: pointer;
+}
+
 button {
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--font-body-sm);
+  font-family: inherit;
+}
+
+/* Focus ring */
+:where(button, [role="button"], a, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+::selection {
+  background: var(--color-selection-bg);
+  color: var(--color-selection-fg);
 }

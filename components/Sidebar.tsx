@@ -23,20 +23,25 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
   return (
     <aside
       className="flex flex-col w-52 shrink-0 h-full"
-      style={{ background: "var(--bg-subtle)", borderRight: "1px solid var(--border)" }}
+      style={{ background: "var(--color-sidebar-bg)", borderRight: "1px solid var(--color-sidebar-border)" }}
     >
-      <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+      {/* Logo */}
+      <div
+        className="px-4 py-3 flex items-center gap-2"
+        style={{ borderBottom: "1px solid var(--color-sidebar-border)" }}
+      >
         <div
           className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0"
-          style={{ background: "var(--accent)", color: "#fff" }}
+          style={{ background: "var(--color-primary)", color: "#fff" }}
         >
           P
         </div>
-        <span className="text-sm font-semibold truncate" style={{ color: "var(--text)" }}>
+        <span className="text-sm font-semibold truncate" style={{ color: "var(--color-sidebar-fg)" }}>
           Pipeline allu
         </span>
       </div>
 
+      {/* Nav */}
       <nav className="flex-1 p-2 space-y-0.5">
         {NAV.map((item) => {
           const active = pathname === item.href || pathname.startsWith(item.href + "/")
@@ -46,8 +51,8 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
               href={item.href}
               className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-colors"
               style={{
-                color: active ? "var(--text)" : "var(--text-muted)",
-                background: active ? "var(--bg-hover)" : "transparent",
+                color: active ? "var(--color-sidebar-fg)" : "var(--color-sidebar-fg-muted)",
+                background: active ? "var(--color-sidebar-accent)" : "transparent",
               }}
             >
               <span className="text-base leading-none">{item.icon}</span>
@@ -57,16 +62,17 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
         })}
       </nav>
 
-      <div className="p-2" style={{ borderTop: "1px solid var(--border)" }}>
+      {/* User */}
+      <div className="p-2" style={{ borderTop: "1px solid var(--color-sidebar-border)" }}>
         <div className="px-2.5 py-1.5 rounded-md">
-          <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>{userEmail}</p>
+          <p className="text-xs truncate" style={{ color: "var(--color-sidebar-fg-muted)" }}>{userEmail}</p>
         </div>
         <button
           onClick={handleSignOut}
           className="w-full text-left px-2.5 py-1.5 rounded-md text-sm transition-colors mt-0.5"
-          style={{ color: "var(--text-faint)" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-faint)")}
+          style={{ color: "var(--color-sidebar-muted)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-sidebar-fg)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-sidebar-muted)")}
         >
           Sair
         </button>
