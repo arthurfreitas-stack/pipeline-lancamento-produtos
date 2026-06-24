@@ -9,7 +9,7 @@ import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 const COLUMNS = [
-  ...PHASES.map((p) => ({ key: `phase_${p.number}`, label: `${p.code} Â· ${PHASE_STATUS_LABELS[p.number]}`, phase: p.number, special: null as null | string })),
+  ...PHASES.map((p) => ({ key: `phase_${p.number}`, label: `Fase ${p.number}: ${PHASE_STATUS_LABELS[p.number]}`, phase: p.number, special: null as null | string })),
   { key: "hold", label: "Hold", phase: null, special: "hold" },
   { key: "Invalidado", label: "Invalidado", phase: null, special: "Invalidado" },
 ]
