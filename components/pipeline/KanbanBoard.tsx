@@ -9,13 +9,13 @@ import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 const COLUMNS = [
-  ...PHASES.map((p) => ({ key: `phase_${p.number}`, label: `${p.code} · ${PHASE_STATUS_LABELS[p.number]}`, phase: p.number, special: null as null | string })),
+  ...PHASES.map((p) => ({ key: `phase_${p.number}`, label: `${p.code} Â· ${PHASE_STATUS_LABELS[p.number]}`, phase: p.number, special: null as null | string })),
   { key: "hold", label: "Hold", phase: null, special: "hold" },
-  { key: "kill", label: "Kill", phase: null, special: "kill" },
+  { key: "Invalidado", label: "Invalidado", phase: null, special: "Invalidado" },
 ]
 
 function getColumnKey(product: ProductCard): string {
-  if (product.status === "killed") return "kill"
+  if (product.status === "killed") return "Invalidado"
   if (product.status === "hold") return "hold"
   return `phase_${product.currentPhase}`
 }

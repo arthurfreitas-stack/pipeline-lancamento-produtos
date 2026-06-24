@@ -39,7 +39,7 @@ export default async function DashboardPage() {
     <div className="max-w-3xl mx-auto px-5 py-8 space-y-8">
       <div>
         <h1 className="text-base font-semibold mb-1" style={{ color: "var(--text)" }}>Dashboard</h1>
-        <p className="text-xs" style={{ color: "var(--text-muted)" }}>Visão geral do pipeline de lançamento</p>
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>VisÃƒÂ£o geral do pipeline de lanÃƒÂ§amento</p>
       </div>
 
       {/* Stat cards */}
@@ -47,7 +47,7 @@ export default async function DashboardPage() {
         {[
           { label: "Total no pipeline", value: total },
           { label: "Ativos", value: active, color: "#4ade80" },
-          { label: "Killed", value: killed, color: "#f87171" },
+          { label: "Invalidados", value: killed, color: "#f87171" },
           { label: "Em Hold", value: hold, color: "#60a5fa" },
         ].map((s) => (
           <div key={s.label} className="rounded-lg p-3" style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)" }}>
@@ -64,7 +64,7 @@ export default async function DashboardPage() {
           {byPhase.map(({ phase, count }) => (
             <div key={phase.number} className="flex items-center gap-3">
               <span className="text-xs w-28 shrink-0" style={{ color: "var(--text-muted)" }}>
-                {phase.code} · {PHASE_STATUS_LABELS[phase.number]}
+                {phase.code} Ã‚Â· {PHASE_STATUS_LABELS[phase.number]}
               </span>
               <div className="flex-1 h-1.5 rounded-full" style={{ background: "var(--border)" }}>
                 {count > 0 && (
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
       {/* Hold overdue alert */}
       {holdOverdue.length > 0 && (
         <div>
-          <h2 className="text-xs font-semibold mb-3" style={{ color: "#f87171" }}>⚠ Hold com retomada vencida</h2>
+          <h2 className="text-xs font-semibold mb-3" style={{ color: "#f87171" }}>Ã¢Å¡Â  Hold com retomada vencida</h2>
           <div className="space-y-2">
             {holdOverdue.map((p) => (
               <Link
@@ -94,7 +94,7 @@ export default async function DashboardPage() {
               >
                 <span style={{ color: "var(--text)" }}>{p.name}</span>
                 <span style={{ color: "#f87171" }} className="text-xs">
-                  Retomada era {p.holdUntil ? new Date(p.holdUntil).toLocaleDateString("pt-BR") : "—"}
+                  Retomada era {p.holdUntil ? new Date(p.holdUntil).toLocaleDateString("pt-BR") : "Ã¢â‚¬â€"}
                 </span>
               </Link>
             ))}
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
 
       {/* Bank of learnings */}
       <div>
-        <h2 className="text-xs font-semibold mb-3" style={{ color: "var(--text-muted)" }}>Banco de Aprendizados — produtos killed</h2>
+        <h2 className="text-xs font-semibold mb-3" style={{ color: "var(--text-muted)" }}>Banco de Aprendizados Ã¢â‚¬â€ produtos invalidados</h2>
         {killedProducts.length === 0 ? (
           <p className="text-xs" style={{ color: "var(--text-faint)" }}>Nenhum produto killed ainda.</p>
         ) : (
@@ -119,7 +119,7 @@ export default async function DashboardPage() {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium" style={{ color: "var(--text)" }}>{p.name}</span>
                   <span className="text-xs" style={{ color: "var(--text-faint)" }}>
-                    F{p.currentPhase} · {p.lastGate?.decidedAt ? new Date(p.lastGate.decidedAt).toLocaleDateString("pt-BR") : "—"}
+                    F{p.currentPhase} Ã‚Â· {p.lastGate?.decidedAt ? new Date(p.lastGate.decidedAt).toLocaleDateString("pt-BR") : "Ã¢â‚¬â€"}
                   </span>
                 </div>
                 {p.lastGate?.learning && (

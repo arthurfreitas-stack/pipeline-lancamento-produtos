@@ -1,13 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { CATEGORIES } from "@/lib/pipeline-config"
 
 export default function NewProductPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([])
   const [form, setForm] = useState({ name: "", category: "", hypothesis: "", owner: "" })
+
+  useEffect(() => {
+    fetch("/api/categories").then((r) => r.json()).then(setCategories)
+  }, [])
 
   function set(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }))
@@ -68,12 +72,21 @@ export default function NewProductPage() {
           <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>
             Categoria <span style={{ color: "#f87171" }}>*</span>
           </label>
-          <select value={form.category} onChange={(e) => set("category", e.target.value)} required>
-            <option value="">Selecione...</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+          <div className="flex gap-2">
+            <select value={form.category} onChange={(e) => set("category", e.target.value)} required className="flex-1">
+              <option value="">Selecione...</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+            <a
+              href="/settings"
+              className="px-2.5 py-1.5 rounded-md text-xs shrink-0 flex items-center"
+              style={{ background: "var(--bg-hover)", color: "var(--text-muted)", border: "1px solid var(--border)" }}
+            >
+              + Gerenciar
+            </a>
+          </div>
         </div>
 
         <div>
@@ -97,10 +110,8 @@ export default function NewProductPage() {
             onChange={(e) => set("hypothesis", e.target.value)}
             placeholder="Por que esse produto faz sentido para a allu? Qual a dor que ele resolve?"
             required
-            minLength={20}
             rows={4}
           />
-          <p className="text-xs mt-1" style={{ color: "var(--text-faint)" }}>Mínimo 20 caracteres · {form.hypothesis.length} digitados</p>
         </div>
 
         <div className="flex gap-2 pt-2">
@@ -114,7 +125,7 @@ export default function NewProductPage() {
           </button>
           <button
             type="submit"
-            disabled={loading || form.hypothesis.length < 20}
+            disabled={loading}
             className="flex-1 py-2 rounded-md text-sm font-medium disabled:opacity-40"
             style={{ background: "var(--accent)", color: "#fff" }}
           >

@@ -32,10 +32,13 @@ export default function BlockForm({ block, productId, phaseNumber, savedFields, 
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
 
   const filledCount = block.fields.filter((f) => {
+    if (f.companion) return false
     const v = values[f.key]
     if (f.type === "checkbox") return v === true
     return v !== "" && v !== undefined && v !== null
   }).length
+
+  const totalCount = block.fields.filter((f) => !f.companion).length
 
   async function saveField(fieldKey: string, fieldType: string, value: unknown) {
     setSaving((s) => ({ ...s, [fieldKey]: true }))
@@ -70,14 +73,14 @@ export default function BlockForm({ block, productId, phaseNumber, savedFields, 
         <span style={{ color: "var(--text)" }}>Bloco {block.code} — {block.title}</span>
         <div className="flex items-center gap-2">
           <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-            {filledCount}/{block.fields.length}
+            {filledCount}/{totalCount}
           </span>
           <span className="text-xs" style={{ color: "var(--text-faint)" }}>{open ? "▲" : "▼"}</span>
         </div>
       </button>
 
       {open && (
-        <div className="p-4 space-y-4" style={{ background: "var(--bg)" }}>
+        <div className="p-4 space-y-3" style={{ background: "var(--bg)" }}>
           {block.fields.map((field) => (
             <FieldInput
               key={field.key}
@@ -89,7 +92,6 @@ export default function BlockForm({ block, productId, phaseNumber, savedFields, 
             />
           ))}
 
-          {/* DRE table for block G */}
           {block.code === "G" && dreEntries !== undefined && (
             <DreTable productId={productId} entries={dreEntries} readOnly={readOnly} />
           )}
@@ -114,6 +116,36 @@ function FieldInput({ field, value, onChange, saving, readOnly }: { field: Field
         <span className="text-sm" style={{ color: "var(--text)" }}>{field.label}</span>
         {saving && <span className="text-xs" style={{ color: "var(--text-faint)" }}>•</span>}
       </label>
+    )
+  }
+
+  if (field.companion) {
+    return (
+      <div className="ml-6 pl-3" style={{ borderLeft: "2px solid var(--border)" }}>
+        <label className="block text-xs font-medium mb-1" style={{ color: "var(--text-faint)" }}>
+          {field.label}
+          {saving && <span className="ml-2" style={{ color: "var(--text-faint)" }}>salvando...</span>}
+        </label>
+        {field.type === "textarea" ? (
+          <textarea
+            value={value as string}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={field.placeholder}
+            disabled={readOnly}
+            rows={2}
+            style={{ fontSize: "0.75rem" }}
+          />
+        ) : (
+          <input
+            type="text"
+            value={value as string}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={field.placeholder}
+            disabled={readOnly}
+            style={{ fontSize: "0.75rem" }}
+          />
+        )}
+      </div>
     )
   }
 
@@ -193,7 +225,7 @@ function FieldInput({ field, value, onChange, saving, readOnly }: { field: Field
         />
       )}
 
-      {(field.type === "text") && (
+      {field.type === "text" && (
         <input
           type="text"
           value={value as string}

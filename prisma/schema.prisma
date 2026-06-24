@@ -177,3 +177,12 @@ model PhaseNote {
   @@unique([productId, phaseNumber])
   @@map("phase_notes")
 }
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("categories")
+}

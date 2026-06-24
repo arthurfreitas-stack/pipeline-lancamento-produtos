@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 const NAV = [
   { href: "/pipeline", label: "Pipeline", icon: "⬡" },
   { href: "/dashboard", label: "Dashboard", icon: "◈" },
+  { href: "/settings", label: "Configurações", icon: "⚙" },
 ]
 
 export default function Sidebar({ userEmail }: { userEmail: string }) {
@@ -24,7 +25,6 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
       className="flex flex-col w-52 shrink-0 h-full"
       style={{ background: "var(--bg-subtle)", borderRight: "1px solid var(--border)" }}
     >
-      {/* Logo */}
       <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
         <div
           className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0"
@@ -37,7 +37,6 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
         </span>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 p-2 space-y-0.5">
         {NAV.map((item) => {
           const active = pathname === item.href || pathname.startsWith(item.href + "/")
@@ -58,7 +57,6 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
         })}
       </nav>
 
-      {/* User */}
       <div className="p-2" style={{ borderTop: "1px solid var(--border)" }}>
         <div className="px-2.5 py-1.5 rounded-md">
           <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>{userEmail}</p>

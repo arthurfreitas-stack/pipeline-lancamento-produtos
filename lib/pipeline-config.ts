@@ -6,6 +6,7 @@ export interface FieldDef {
   type: FieldType
   options?: string[]
   placeholder?: string
+  companion?: boolean
 }
 
 export interface BlockDef {
@@ -212,8 +213,11 @@ export const PHASES: PhaseDef[] = [
           { key: "alluoffice_ok", label: "Cadastrado no AlluOffice", type: "checkbox" },
           { key: "sap_ok", label: "Cadastrado no SAP", type: "checkbox" },
           { key: "imagens_site_ok", label: "Imagens no site", type: "checkbox" },
+          { key: "imagens_site_link", label: "Link das imagens/galeria", type: "text", placeholder: "Cole a URL...", companion: true },
           { key: "descricao_site_ok", label: "Descrição e ficha técnica no site", type: "checkbox" },
+          { key: "descricao_site_link", label: "Link da página do produto", type: "text", placeholder: "Cole a URL da página...", companion: true },
           { key: "tags_pixel_ok", label: "Tags de evento Meta e GA4 configuradas", type: "checkbox" },
+          { key: "tags_pixel_detalhe", label: "Eventos e IDs configurados", type: "text", placeholder: "Ex: purchase, add_to_cart — IDs: META 12345 / GA4 G-XXXXX", companion: true },
         ],
       },
       {
@@ -221,9 +225,12 @@ export const PHASES: PhaseDef[] = [
         title: "Habilitar vendas e atendimento",
         fields: [
           { key: "ia_treinada_ok", label: "IA treinada sobre o produto", type: "checkbox" },
+          { key: "ia_treinada_detalhe", label: "Base/material utilizado no treinamento", type: "text", placeholder: "Ex: ficha técnica v2, doc de objeções...", companion: true },
           { key: "time_treinado_ok", label: "Time de vendas treinado", type: "checkbox" },
+          { key: "time_treinado_detalhe", label: "Data e material de treinamento", type: "text", placeholder: "Ex: 12/06/2025 — deck 'Patinete elétrico v1'", companion: true },
           { key: "template_atendimento", label: "Template de atendimento (perguntas + objeções)", type: "textarea" },
           { key: "video_unboxing_ok", label: "Vídeo de unboxing gravado", type: "checkbox" },
+          { key: "video_unboxing_link", label: "Link do vídeo", type: "text", placeholder: "Cole a URL do vídeo...", companion: true },
         ],
       },
       {
@@ -231,11 +238,15 @@ export const PHASES: PhaseDef[] = [
         title: "Fluxos de CRM e pós-venda",
         fields: [
           { key: "fluxo_recuperacao_ok", label: "Fluxo de recuperação checkout WhatsApp criado", type: "checkbox" },
+          { key: "fluxo_recuperacao_template", label: "Nome do template WhatsApp", type: "text", placeholder: "Ex: recuperacao_checkout_patinete_v1", companion: true },
           { key: "email_lancamento_ok", label: "Email de lançamento criado", type: "checkbox" },
+          { key: "email_lancamento_template", label: "Nome/ID do email de lançamento", type: "text", placeholder: "Ex: lancamento_patinete_junho25", companion: true },
           { key: "email_recuperacao_ok", label: "Email de recuperação de checkout criado", type: "checkbox" },
+          { key: "email_recuperacao_template", label: "Nome/ID do email de recuperação", type: "text", placeholder: "Ex: recuperacao_checkout_patinete_v1", companion: true },
           { key: "segmento_hubspot", label: "Segmento HubSpot — tag", type: "text", placeholder: "Ex: lead-patinete-checkout-abandonado" },
           { key: "fluxo_assistencia", label: "Fluxo de assistência técnica/sinistro", type: "textarea", placeholder: "Ex: interno ou terceirizado? SLA? Quem conserta?" },
           { key: "teste_compra_ok", label: "Teste de compra real feito", type: "checkbox" },
+          { key: "teste_compra_obs", label: "Observações do teste de compra", type: "textarea", placeholder: "O que foi testado, o que funcionou e o que precisou corrigir...", companion: true },
         ],
       },
     ],
@@ -282,6 +293,7 @@ export const PHASES: PhaseDef[] = [
           { key: "funil_quente", label: "Estratégia funil quente (cross-sell)", type: "textarea", placeholder: "Base ativa sem o produto — CAC 3–5x menor, rodar primeiro" },
           { key: "segmentacao_crm", label: "Segmentação CRM (HubSpot)", type: "textarea", placeholder: "Ex: tem iPhone, não tem notebook" },
           { key: "regua_recuperacao_ok", label: "Régua de recuperação de checkout ligada", type: "checkbox" },
+          { key: "regua_recuperacao_detalhe", label: "Detalhes da régua ativada", type: "text", placeholder: "Ex: 3 emails + 2 WA — HubSpot fluxo 'recuperacao_gtm'", companion: true },
         ],
       },
       {
@@ -321,7 +333,7 @@ export const PHASES: PhaseDef[] = [
           { key: "meta_pedidos_liquidos", label: "Meta de pedidos líquidos", type: "number" },
           { key: "meta_mrr", label: "Meta de MRR novo (R$)", type: "number" },
           { key: "meta_faturamento", label: "Meta de faturamento (R$)", type: "number" },
-          { key: "criterio_kill", label: "Critério explícito de Kill", type: "textarea", placeholder: "Ex: se CPA líquido > R$400 ou aprovação < 50% após 30 dias" },
+          { key: "criterio_kill", label: "Critério explícito de Invalidação", type: "textarea", placeholder: "Ex: se CPA líquido > R$400 ou aprovação < 50% após 30 dias" },
         ],
       },
       {
@@ -402,7 +414,7 @@ export const PHASE_STATUS_LABELS: Record<number, string> = {
   6: "Rampagem",
 }
 
-export const CATEGORIES = [
+export const DEFAULT_CATEGORIES = [
   "Smartphone",
   "Notebook",
   "Tablet",
@@ -415,9 +427,11 @@ export const CATEGORIES = [
   "Outro",
 ]
 
+export const CATEGORIES = DEFAULT_CATEGORIES
+
 export const DECISION_CONFIG = {
   go: { label: "Go", icon: "✅", color: "text-green-400", bg: "bg-green-500/10 border-green-500/30" },
-  kill: { label: "Kill", icon: "❌", color: "text-red-400", bg: "bg-red-500/10 border-red-500/30" },
+  kill: { label: "Invalidar", icon: "❌", color: "text-red-400", bg: "bg-red-500/10 border-red-500/30" },
   recycle: { label: "Recycle", icon: "🔁", color: "text-yellow-400", bg: "bg-yellow-500/10 border-yellow-500/30" },
   hold: { label: "Hold", icon: "⏸", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/30" },
 } as const
@@ -434,7 +448,7 @@ export const FIT_SCORE_AXES = [
 ] as const
 
 export function calcFitScore(axes: Record<string, number>): { score: number; recommendation: "go" | "conditional" | "kill" } {
-  const maxRaw = FIT_SCORE_AXES.reduce((sum, a) => sum + a.weight * 5, 0) // 150
+  const maxRaw = FIT_SCORE_AXES.reduce((sum, a) => sum + a.weight * 5, 0)
   const raw = FIT_SCORE_AXES.reduce((sum, a) => sum + (axes[a.key] ?? 0) * a.weight, 0)
   const score = Math.round((raw / maxRaw) * 100)
   const recommendation = score >= 60 ? "go" : score >= 40 ? "conditional" : "kill"
