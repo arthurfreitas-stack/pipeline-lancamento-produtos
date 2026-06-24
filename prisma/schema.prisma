@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ProductStatus {
+  active
+  killed
+  hold
+  completed
+}
+
+enum GateDecisionType {
+  go
+  kill
+  recycle
+  hold
+}
+
+enum FieldType {
+  text
+  textarea
+  number
+  checkbox
+  select
+  select_multi
+  date
+}
+
+model Product {
+  id           String        @id @default(uuid())
+  name         String
+  category     String
+  hypothesis   String
+  owner        String
+  status       ProductStatus @default(active)
+  currentPhase Int           @default(0) @map("current_phase")
+  fitScore     Int?          @map("fit_score")
+  holdUntil    DateTime?     @map("hold_until")
+  holdReason   String?       @map("hold_reason")
+  createdBy    String        @map("created_by")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  gateDecisions GateDecision[]
+  phaseEntries  PhaseEntry[]
+  blockFields   BlockField[]
+  fitScoreEntry FitScoreEntry?
+  dreEntries    DreEntry[]
+  phaseNotes    PhaseNote[]
+
+  @@map("products")
+}
+
+model GateDecision {
+  id                 String           @id @default(uuid())
+  productId          String           @map("product_id")
+  gateNumber         Int              @map("gate_number")
+  decision           GateDecisionType
+  observation        String?
+  learning           String?
+  holdUntil          DateTime?        @map("hold_until")
+  holdReason         String?          @map("hold_reason")
+  recycledHypothesis String?          @map("recycled_hypothesis")
+  recycledToPhase    Int?             @map("recycled_to_phase")
+  decidedAt          DateTime         @default(now()) @map("decided_at")
+  decidedBy          String           @map("decided_by")
+  decidedByName      String           @default("") @map("decided_by_name")
+
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  phaseEntries PhaseEntry[]
+
+  @@map("gate_decisions")
+}
+
+model PhaseEntry {
+  id             String    @id @default(uuid())
+  productId      String    @map("product_id")
+  phaseNumber    Int       @map("phase_number")
+  enteredAt      DateTime  @default(now()) @map("entered_at")
+  exitedAt       DateTime? @map("exited_at")
+  gateDecisionId String?   @map("gate_decision_id")
+
+  product      Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  gateDecision GateDecision? @relation(fields: [gateDecisionId], references: [id])
+
+  @@map("phase_entries")
+}
+
+model BlockField {
+  id            String    @id @default(uuid())
+  productId     String    @map("product_id")
+  phaseNumber   Int       @map("phase_number")
+  blockCode     String    @map("block_code")
+  fieldKey      String    @map("field_key")
+  fieldType     FieldType @map("field_type")
+  valueText     String?   @map("value_text")
+  valueNumber   Float?    @map("value_number")
+  valueBoolean  Boolean?  @map("value_boolean")
+  valueDate     DateTime? @map("value_date")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  updatedBy     String    @map("updated_by")
+  updatedByName String    @default("") @map("updated_by_name")
+
+  product Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  history FieldHistory[]
+
+  @@unique([productId, phaseNumber, blockCode, fieldKey])
+  @@map("block_fields")
+}
+
+model FieldHistory {
+  id            String   @id @default(uuid())
+  productId     String   @map("product_id")
+  blockFieldId  String   @map("block_field_id")
+  fieldKey      String   @map("field_key")
+  oldValue      Json?    @map("old_value")
+  newValue      Json?    @map("new_value")
+  changedAt     DateTime @default(now()) @map("changed_at")
+  changedBy     String   @map("changed_by")
+  changedByName String   @default("") @map("changed_by_name")
+
+  blockField BlockField @relation(fields: [blockFieldId], references: [id], onDelete: Cascade)
+
+  @@map("field_history")
+}
+
+model DreEntry {
+  id         String   @id @default(uuid())
+  productId  String   @map("product_id")
+  item       String
+  value      Float
+  percentage Float?
+  order      Int      @default(0)
+  updatedBy  String   @map("updated_by")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("dre_entries")
+}
+
+model FitScoreEntry {
+  id                String   @id @default(uuid())
+  productId         String   @unique @map("product_id")
+  axisBarrier       Int      @default(0) @map("axis_barrier")
+  axisDemand        Int      @default(0) @map("axis_demand")
+  axisOwnershipPain Int      @default(0) @map("axis_ownership_pain")
+  axisUpgrade       Int      @default(0) @map("axis_upgrade")
+  axisDurability    Int      @default(0) @map("axis_durability")
+  axisTicket        Int      @default(0) @map("axis_ticket")
+  axisOperation     Int      @default(0) @map("axis_operation")
+  axisTempUse       Int      @default(0) @map("axis_temp_use")
+  totalScore        Int      @default(0) @map("total_score")
+  recommendation    String   @default("kill")
+  calculatedAt      DateTime @default(now()) @map("calculated_at")
+  calculatedBy      String   @map("calculated_by")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("fit_score_entries")
+}
+
+model PhaseNote {
+  id          String   @id @default(uuid())
+  productId   String   @map("product_id")
+  phaseNumber Int      @map("phase_number")
+  content     String
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedBy   String   @map("updated_by")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, phaseNumber])
+  @@map("phase_notes")
+}
